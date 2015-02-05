@@ -14,142 +14,92 @@
     <title>マインスイーパー</title>
 </head>
 <body>
-    <table id="gameArea">
+    <div class="container">
+        <nav class="navbar navbar-default navbar-custom">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#">
+                        <img alt="Brand" height="100%" src="/saolei/img/brand.png">
+                    </a>
+                    <p class="navbar-text">マインスイーパー</p>
+                </div>
+            </div>
+        </nav>
+        <div class="row">
+            <%--<div class="col-md-4 col-sm-1"></div>--%>
 
-    </table>
+            <!-- main col -->
+            <div class="col-md-12 col-sm-12">
+                <div class="well well-sm" id="operation-well">
+                    自分の道を自分で選ぼう！
+                    <div class="row operation-panel">
+                        <div class="col-sm-4">
+                            <div class="btn-group" role="group" aria-label="...">
+                                <button type="button" class="btn btn-default active level-btn"><i class="fa fa-gift"> 簡単</i></button>
+                                <button type="button" class="btn btn-default level-btn"><i class="fa fa-lightbulb-o"> 普通</i></button>
+                                <button type="button" class="btn btn-default level-btn"><i class="fa fa-heartbeat"> 自殺</i></button>
+                                <button type="button" class="btn btn-default level-btn"><i class="fa fa-cutlery"> カスタム</i></button>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            マップサイズ <select class="form-control input-sm" id="mapSize">
+                                <option>5</option>
+                            </select>
+
+                        </div>
+                        <div class="col-md-4">
+                            マイン数 <select class="form-control input-sm" id="mineCount">
+                                <option>5</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-4" id="startDiv">
+                            <button class="btn btn-success btn-block" onclick="loadGameAnimation()"><i class="fa fa-flag"> スタート</i></button>
+                        </div>
+                        <div class="col-sm-8">
+                            <div class="startAnimationBomb"></div>
+                            <img class="" id="truckImg" src="/saolei/img/begin.png" height="50px" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="row panel-title">
+                            <div class="col-sm-3">
+                                <div class="sideDiv">
+                                    残す <span id="mineCountDiv"></span> 個
+                                </div>
+                            </div>
+                            <div class="col-sm-6"><img src="/saolei/img/begin.png" height="50px" /></div>
+                            <div class="col-sm-3">
+                                <div class="sideDiv">
+                                    時間 <span id="timeDiv"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-body game-panel">
+
+                        <table id="gameArea">
+
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <%--<div class="col-md-4 col-sm-1"></div>--%>
+        </div>
+    </div>
 </body>
+
 <script type="text/javascript">
-    $(document).ready(function(){
-        $(document).bind("contextmenu", function (e) {
-            return false;
-        });
-
-
-        //properties data
-        var gameStauts = 0;//1.start 2.over 3.pause
-        var mapSize = 5;//5*5
-        var mineCount = 5;
-        var mineList = new Array();
-
-
-        //generate map
-        var htmlContent = "";
-        for(var i = 0;i < mapSize;i++){
-            htmlContent = htmlContent + '<tr>';
-            for(var j = 0;j < mapSize;j++){
-                htmlContent = htmlContent + '<td id="'+i+'-'+j+'" class="mapCell"></td>';
-            }
-            htmlContent = htmlContent + '</tr>';
-        }
-        $("#gameArea").html(htmlContent);
-
-
-        //generate mines
-        var i = 0;
-        while(true) {
-            if(i < mineCount) {
-                var location = parseInt(Math.random() * 25);
-                var locationX = parseInt(location % mapSize);
-                var locationY = parseInt(location / 5);
-                if (mineList.indexOf(locationX + "-" + locationY) < 0) {
-                    mineList.push(locationX + "-" + locationY);
-                    $("#"+locationX+"-"+locationY).html("mine");
-                    i++;
-                }
-            } else {
-                break;
-            }
-        }
-        console.log(mineList);
-
-        //////////////count mine
-        //initialize map
-        var statusMap = new Array();//mine=-1, empty=0, mine number>0
-        for(i = 0;i < mapSize;i++){
-            var rowMap = new Array();
-            for(var j = 0;j<mapSize;j++){
-                rowMap.push(0);
-            }
-            statusMap.push(rowMap);
-        }
-
-        //locate mines
-        for(i = 0;i < mineList.length;i++){
-            var tempLocation = new String(mineList[i]);
-            var location = tempLocation.split('-');
-            statusMap[location[0]][location[1]] = parseInt("-1"); //location mine -1
-        }
-
-        //count mine
-        for(i = 0;i < statusMap.length;i++){
-            for(var j = 0;j < statusMap[i].length;j++){
-                var tempMineCount = 0;
-                if(statusMap[i][j] == -1){
-                    continue;
-                }
-                //left
-                if(i-1 >= 0){
-                    if(statusMap[i-1][j] == -1){
-                        tempMineCount++;
-                    }
-                }
-                //top left
-                if(i-1 >= 0 && j-1 >= 0){
-                    if(statusMap[i-1][j-1] == -1){
-                        tempMineCount++;
-                    }
-                }
-                //top
-                if(j-1 >= 0){
-                    if(statusMap[i][j-1] == -1){
-                        tempMineCount++;
-                    }
-                }
-                //top right
-                if(i+1 < mapSize && j-1 >=0){
-                    if(statusMap[i+1][j-1] == -1){
-                        tempMineCount++;
-                    }
-                }
-                //right
-                if(i+1 < mapSize){
-                    if(statusMap[i+1][j] == -1){
-                        tempMineCount++;
-                    }
-                }
-                //bottom right
-                if(i+1 < mapSize && j+1 < mapSize){
-                    if(statusMap[i+1][j+1] == -1){
-                        tempMineCount++;
-                    }
-                }
-                //bottom
-                if(j+1 < mapSize){
-                    if(statusMap[i][j+1] == -1){
-                        tempMineCount++;
-                    }
-                }
-                //bottom left
-                if(i-1 >= 0 && j+1 < mapSize){
-                    if(statusMap[i-1][j+1] == -1){
-                        tempMineCount++;
-                    }
-                }
-                statusMap[i][j] = tempMineCount;
-            }
-        }
-        console.log(statusMap);
-
-        $(".mapCell").click(function(){
-            var tmpIdStr = new String($(this)[0].id);
-//            console.log(tmpIdStr);
-            var location = tmpIdStr.split("-");
-            console.log(statusMap[location[0]][location[1]]);
-
-        });
-
-    });
-
+loadGame();
 </script>
+
 
 </html>
