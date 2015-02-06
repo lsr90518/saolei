@@ -20,7 +20,6 @@ public class GameController {
     @RequestMapping(value = "/start", method = RequestMethod.GET)
     public String gamestart(ModelMap modelMap){
 
-//        int[][] mineMap = gameService.gameStart();
 
 //        modelMap.addAttribute("mineMap",mineMap);
         return "game";

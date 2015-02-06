@@ -247,7 +247,7 @@ function loadGame(){
             }
 
         } else {
-            //others click
+            //others button click
             currentSelectItem = "";
             if(selectList.indexOf($(this)[0].id) < 0) {
                 //has not add flag
@@ -258,12 +258,7 @@ function loadGame(){
                     showMines(gameStatus);
                 } else {
                     changeFace("discover");
-                    unCoverList.push($(this)[0].id);
-
-                    if (statusMap[location[0]][location[1]] == 0) {
-                    } else {
-                        $($(this)[0]).html("<img height='100%' src='/saolei/img/" + statusMap[location[0]][location[1]] + ".png' >");
-                    }
+                    autoDiscover($(this)[0].id);
                 }
             }
 
@@ -300,4 +295,75 @@ function changeFace(status){
     setTimeout(function(){
         $("#faceImg").attr({"src":"/saolei/img/face.png"});
     },300)
+}
+
+function autoDiscover(idStr){
+    //not contains in uncoverList
+    if(unCoverList.indexOf(idStr) == -1){
+        unCoverList.push(idStr);
+        var id = new String(idStr);
+        var i = parseInt(id.split('-')[0]);
+        var j = parseInt(id.split('-')[1]);
+
+        //number
+        if(statusMap[i][j] > 0){
+            $("#" + i + "-" + j).html("<img height='100%' src='/saolei/img/" + statusMap[i][j] + ".png' >");
+
+        } else if(statusMap[i][j] == 0){
+            //top
+            if(i>=1){
+                var ti = i-1;
+                var tmpId = ti+'-'+j;
+                autoDiscover(tmpId);
+            }
+            //top left
+            if((i>=1) && (j>=1)){
+                var ti = i - 1;
+                var tj = j - 1;
+                var tmpId = ti+'-'+tj;
+                autoDiscover(tmpId);
+            }
+            //left
+            if(j-1 >= 0){
+                var tj = j-1;
+                var tmpId = i+'-'+tj;
+                autoDiscover(tmpId);
+            }
+            //bottom left
+            if((i<=mapSize-2)&&(j-1>=0)){
+                var ti = i+1;
+                var tj = j-1;
+                var tmpId = ti+'-'+tj;
+                autoDiscover(tmpId);
+            }
+            //bottom
+            if(i <= mapSize-2){
+                var ti = i + 1;
+                var tmpId = ti+'-'+j;
+                autoDiscover(tmpId);
+            }
+            //bottom right
+            if(i<=mapSize-2 && j<=mapSize-2){
+                var ti = i+1;
+                var tj = j+1;
+                var tmpId = ti+'-'+tj;
+                autoDiscover(tmpId);
+            }
+            //right
+            if(j < mapSize-2){
+                var tj = j + 1;
+                var tmpId = i+'-'+tj;
+                autoDiscover(tmpId);
+            }
+            //top right
+            if(i-1 >= 0 && (j < j-2)){
+                var ti = i -1;
+                var tj = j+1;
+                var tmpId = ti+'-'+tj;
+                autoDiscover(tmpId);
+            }
+            $("#" + i + "-" + j).css({"background": "white"});
+        }
+    }
+
 }

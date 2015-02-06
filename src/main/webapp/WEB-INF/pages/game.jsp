@@ -105,6 +105,7 @@
 <%--</div>--%>
 
 <script type="text/javascript">
+//    loadGame();
 </script>
 
 
