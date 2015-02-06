@@ -12,10 +12,16 @@
     background: -webkit-gradient(linear, 0 0, 0 100%, from(rgb(0,141,114)), to(#E1F5C4));
 }
 
+.game-panel{
+    opacity: 0;
+}
+
 #gameArea{
     /*width: 500px;*/
-    /*display: none;*/
+    opacity: 0;
 }
+
+
 .mapCell{
     /*background-color: skyblue;*/
     background-image: url("/saolei/img/back.png");

@@ -65,7 +65,7 @@
                     </div>
                 </div>
 
-                <div class="panel panel-default">
+                <div class="panel panel-default game-panel">
                     <div class="panel-heading">
                         <div class="row panel-title">
                             <div class="col-sm-3">
@@ -98,7 +98,7 @@
 </body>
 
 <script type="text/javascript">
-loadGame();
+
 </script>
 
 

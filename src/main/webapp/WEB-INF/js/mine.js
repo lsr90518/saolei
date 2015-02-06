@@ -5,7 +5,7 @@ $(document).ready(function(){
     });
 
     var levelMapSize = [5,7,10];
-    var levelMineCount = [5,17,25];
+    var levelMineCount = [5,17,23];
 
     $('.level-btn').mouseup(function(obj){
         $('.level-btn').removeClass('active');
@@ -44,7 +44,8 @@ function loadGameAnimation(){
             opacity: '0'
         },1000,function(){
             $("#operation-well").hide();
-            $("#gameArea").show(1000);
+            $(".game-panel").animate({opacity:1},1000,'linear');
+            $("#gameArea").animate({opacity:1},1000,'linear');
         });
     })
 }
@@ -65,7 +66,8 @@ function loadGame(){
     //not null check
     mapSize = parseInt($('#mapSize').val());
     mineCount = parseInt($('#mineCount').val());
-
+    console.log(mapSize);
+    console.log(mineCount);
     $("#mineCountDiv").html(mineCount);
 
     //generate map
@@ -84,9 +86,10 @@ function loadGame(){
     var i = 0;
     while(true) {
         if(i < mineCount) {
-            var location = parseInt(Math.random() * 25);
+            var edge = mapSize*mapSize;
+            var location = parseInt(Math.random() * edge);
             var locationX = parseInt(location % mapSize);
-            var locationY = parseInt(location / 5);
+            var locationY = parseInt(location / mapSize);
             if (mineList.indexOf(locationX + "-" + locationY) < 0) {
                 mineList.push(locationX + "-" + locationY);
 //                    $("#"+locationX+"-"+locationY).html("mine");
@@ -250,7 +253,7 @@ function loadGame(){
 }
 
 function showMines(gameStatus){
-    alert("game over"); 
+    alert("game over");
     for(var i = 0;i<mapSize;i++){
         for(var j = 0;j<mapSize;j++){
             //un covered cell
