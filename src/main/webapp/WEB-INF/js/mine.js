@@ -1,4 +1,17 @@
 
+//properties data
+var gameStatus = 0;//1.start 2.over 3.pause
+var mapSize = 10;//5*5
+var mineCount = 10;
+var currentSelectItem;
+var mineList = new Array();
+var unCoverList = new Array();
+var selectList = new Array();
+var statusMap = new Array();//mine=-1, covered=0, minecount>0
+
+var timer;
+var sec = 0;
+
 $(document).ready(function(){
     $(document).bind("contextmenu", function (e) {
         return false;
@@ -16,7 +29,7 @@ $(document).ready(function(){
                 if(i == 3){
                     var htmlContent = "";
                     //make map size
-                    for(var j = 0;j<25;j++){
+                    for(var j = 0;j<23;j++){
                         var num = parseInt(j);
                         num = num+1;
                         htmlContent = htmlContent + '<option>'+num+'</option>';
@@ -45,23 +58,22 @@ function loadGameAnimation(){
         },1000,function(){
             $("#operation-well").hide();
             $(".game-panel").animate({opacity:1},1000,'linear');
-            $("#gameArea").animate({opacity:1},1000,'linear');
+            $("#gameArea").animate({opacity:1},1000,'linear',function(){
+                timerStart();
+            });
         });
     })
 }
 
-//properties data
-var gameStatus = 0;//1.start 2.over 3.pause
-var mapSize = 10;//5*5
-var mineCount = 10;
-var currentSelectItem;
-var mineList = new Array();
-var unCoverList = new Array();
-var selectList = new Array();
-var statusMap = new Array();//mine=-1, covered=0, minecount>0
+function timerStart(){
+    timer = setInterval(function(){
+
+        $("#timeDiv").html(sec);
+        sec++;
+    },1000);
+}
 
 function loadGame(){
-
 
     //not null check
     mapSize = parseInt($('#mapSize').val());
@@ -208,11 +220,14 @@ function loadGame(){
                         }
                     }
                     if(gameStatus == 2){
-                        alert("game win!!");
-                    }
-                }
+                        $("#faceImg").attr({"src":"/saolei/img/win.png"});
 
-                $($(this)[0]).html("<img height='100%' src='/saolei/img/flag.png'>");
+                        showMines(3);
+                    }
+                } else {
+                    $($(this)[0]).html("<img height='100%' src='/saolei/img/flag.png'>");
+                    changeFace("dropFlag");
+                }
                 var currentMineCount = parseInt($("#mineCountDiv").html());
                 currentMineCount--;
                 $("#mineCountDiv").html(currentMineCount);
@@ -239,12 +254,16 @@ function loadGame(){
                 if (statusMap[location[0]][location[1]] == -1) {
                     $($(this)[0]).html("<img height='100%' src='/saolei/img/clicked.png'>");
                     gameStatus = 2;
+                    $("#faceImg").attr({"src":"/saolei/img/gameover.png"});
                     showMines(gameStatus);
-                } else if (statusMap[location[0]][location[1]] == 0) {
-                    unCoverList.push($(this)[0].id);
                 } else {
-                    $($(this)[0]).html("<img height='100%' src='/saolei/img/" + statusMap[location[0]][location[1]] + ".png' >");
+                    changeFace("discover");
                     unCoverList.push($(this)[0].id);
+
+                    if (statusMap[location[0]][location[1]] == 0) {
+                    } else {
+                        $($(this)[0]).html("<img height='100%' src='/saolei/img/" + statusMap[location[0]][location[1]] + ".png' >");
+                    }
                 }
             }
 
@@ -253,13 +272,19 @@ function loadGame(){
 }
 
 function showMines(gameStatus){
-    alert("game over");
+
+    clearInterval(timer);
+
     for(var i = 0;i<mapSize;i++){
         for(var j = 0;j<mapSize;j++){
             //un covered cell
             if(unCoverList.indexOf(i+"-"+j) < 0) {
                 if (statusMap[i][j] == -1) {
-                    $("#" + i + "-" + j).html("<img height='100%' src='/saolei/img/clicked.png'>");
+                    if(gameStatus == 3){
+                        $("#" + i + "-" + j).html("<img height='100%' src='/saolei/img/flag.png'>");
+                    } else {
+                        $("#" + i + "-" + j).html("<img height='100%' src='/saolei/img/clicked.png'>");
+                    }
                 } else if (statusMap[i][j] == 0) {
                     $("#" + i + "-" + j).css({"background": "white"});
                 } else {
@@ -268,4 +293,11 @@ function showMines(gameStatus){
             }
         }
     }
+}
+
+function changeFace(status){
+    $("#faceImg").attr({"src":"/saolei/img/"+status+".png"});
+    setTimeout(function(){
+        $("#faceImg").attr({"src":"/saolei/img/face.png"});
+    },300)
 }

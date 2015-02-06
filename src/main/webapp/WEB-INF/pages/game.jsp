@@ -56,11 +56,11 @@
 
                     <div class="row">
                         <div class="col-sm-4" id="startDiv">
-                            <button class="btn btn-success btn-block" onclick="loadGameAnimation()"><i class="fa fa-flag"> スタート</i></button>
+                            <button class="btn btn-success btn-start btn-block" onclick="loadGameAnimation()"><i class="fa fa-flag"> スタート</i></button>
                         </div>
                         <div class="col-sm-8">
                             <div class="startAnimationBomb"></div>
-                            <img class="" id="truckImg" src="/saolei/img/begin.png" height="50px" />
+                            <img class="" id="truckImg" src="/saolei/img/sweeper.png" height="50px" />
                         </div>
                     </div>
                 </div>
@@ -68,16 +68,20 @@
                 <div class="panel panel-default game-panel">
                     <div class="panel-heading">
                         <div class="row panel-title">
-                            <div class="col-sm-3">
+                            <div class="col-sm-1"></div>
+                            <div class="col-sm-2">
                                 <div class="sideDiv">
                                     <i class="fa fa-bomb fa-2x"> </i> 残す <span id="mineCountDiv"></span> 個
                                 </div>
                             </div>
-                            <div class="col-sm-6"><img src="/saolei/img/begin.png" height="50px" /></div>
-                            <div class="col-sm-3">
+                            <div class="col-sm-6"><img id="faceImg" src="/saolei/img/face.png" height="50px" /></div>
+                            <div class="col-sm-2">
                                 <div class="sideDiv">
-                                    <span id="timeDiv"></span>
+                                    <i class="fa fa-clock-o"></i> <span id="timeDiv"></span> s
                                 </div>
+                            </div>
+                            <div class="col-sm-1">
+                                <button class="btn btn-side btn-default" onclick="location.reload()">R</button>
                             </div>
                         </div>
                     </div>
@@ -96,9 +100,11 @@
         </div>
     </div>
 </body>
+<%--<div id="overLayer">--%>
+
+<%--</div>--%>
 
 <script type="text/javascript">
-
 </script>
 
 
