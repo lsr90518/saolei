@@ -49,13 +49,18 @@ function loadGameAnimation(){
     })
 }
 
+//properties data
+var gameStatus = 0;//1.start 2.over 3.pause
+var mapSize = 10;//5*5
+var mineCount = 10;
+var currentSelectItem;
+var mineList = new Array();
+var unCoverList = new Array();
+var selectList = new Array();
+var statusMap = new Array();//mine=-1, covered=0, minecount>0
+
 function loadGame(){
-    //properties data
-    var gameStauts = 0;//1.start 2.over 3.pause
-    var mapSize = 10;//5*5
-    var mineCount = 10;
-    var mineList = new Array();
-    var selectList = new Array();
+
 
     //not null check
     mapSize = parseInt($('#mapSize').val());
@@ -95,7 +100,6 @@ function loadGame(){
 
     //////////////count mine
     //initialize map
-    var statusMap = new Array();//mine=-1, empty=0, mine number>0
     for(i = 0;i < mapSize;i++){
         var rowMap = new Array();
         for(var j = 0;j<mapSize;j++){
@@ -172,6 +176,11 @@ function loadGame(){
     console.log(statusMap);
 
     $(".mapCell").mouseup(function(e){
+        //check game status
+        if(gameStatus == 2){
+            return false;
+        }
+
         //clear background image
         $($(this)[0]).css({"background": "white"});
         //get location id
@@ -181,38 +190,79 @@ function loadGame(){
         //right click
         if(e.which == 3){
 
-            selectList.push($(this)[0].id);
-            //check if win
-            if(selectList.length == mineList.length){
-                gameStauts = 2;
-                for(i = 0;i<selectList.length;i++){
-                    if(mineList.indexOf(selectList[i]) < 0){
-                        gameStauts = 1;
+            if(unCoverList.indexOf($(this)[0].id) > -1){
+                return false;
+            }
+            if(selectList.indexOf($(this)[0].id) < 0){
+                //選択されてない場合
+                selectList.push($(this)[0].id);
+                //check if win
+                if(selectList.length == mineList.length){
+                    gameStatus = 2;
+                    for(i = 0;i<selectList.length;i++){
+                        if(mineList.indexOf(selectList[i]) < 0){
+                            gameStatus = 1;
+                        }
+                    }
+                    if(gameStatus == 2){
+                        alert("game win!!");
                     }
                 }
-                if(gameStauts == 2){
-                    alert("game win!!");
+
+                $($(this)[0]).html("<img height='100%' src='/saolei/img/flag.png'>");
+                var currentMineCount = parseInt($("#mineCountDiv").html());
+                currentMineCount--;
+                $("#mineCountDiv").html(currentMineCount);
+            } else {
+                if(currentSelectItem == $(this)[0].id){
+                    $($(this)[0]).css({"background":""});
+                    $($(this)[0]).html("");
+                    var index = selectList.indexOf($(this)[0].id);
+                    selectList.splice(index, index+1);
+                    currentSelectItem = "";
+                    var currentMineCount = parseInt($("#mineCountDiv").html());
+                    currentMineCount++;
+                    $("#mineCountDiv").html(currentMineCount);
+                } else {
+                    currentSelectItem = $(this)[0].id;
                 }
             }
 
-            $($(this)[0]).html("<img height='100%' src='/saolei/img/flag.png'>");
-            var currentMineCount = parseInt($("#mineCountDiv").html());
-            currentMineCount--;
-            $("#mineCountDiv").html(currentMineCount);
-
         } else {
-
             //others click
-            if (statusMap[location[0]][location[1]] == -1) {
-                $($(this)[0]).html("<img height='100%' src='/saolei/img/clicked.png'>");
-
-            } else {
-                if (statusMap[location[0]][location[1]] == 0) {
-
+            currentSelectItem = "";
+            if(selectList.indexOf($(this)[0].id) < 0) {
+                //has not add flag
+                if (statusMap[location[0]][location[1]] == -1) {
+                    $($(this)[0]).html("<img height='100%' src='/saolei/img/clicked.png'>");
+                    gameStatus = 2;
+                    showMines(gameStatus);
+                } else if (statusMap[location[0]][location[1]] == 0) {
+                    unCoverList.push($(this)[0].id);
                 } else {
                     $($(this)[0]).html("<img height='100%' src='/saolei/img/" + statusMap[location[0]][location[1]] + ".png' >");
+                    unCoverList.push($(this)[0].id);
+                }
+            }
+
+        }
+    });
+}
+
+function showMines(gameStatus){
+    alert("game over"); 
+    for(var i = 0;i<mapSize;i++){
+        for(var j = 0;j<mapSize;j++){
+            //un covered cell
+            if(unCoverList.indexOf(i+"-"+j) < 0) {
+                if (statusMap[i][j] == -1) {
+                    $("#" + i + "-" + j).html("<img height='100%' src='/saolei/img/clicked.png'>");
+                } else if (statusMap[i][j] == 0) {
+                    $("#" + i + "-" + j).css({"background": "white"});
+                } else {
+                    $("#" + i + "-" + j).html("<img height='100%' src='/saolei/img/" + statusMap[i][j] + ".png' >");
                 }
             }
         }
-    });
+    }
 }

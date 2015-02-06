@@ -70,13 +70,13 @@
                         <div class="row panel-title">
                             <div class="col-sm-3">
                                 <div class="sideDiv">
-                                    残す <span id="mineCountDiv"></span> 個
+                                    <i class="fa fa-bomb fa-2x"> </i> 残す <span id="mineCountDiv"></span> 個
                                 </div>
                             </div>
                             <div class="col-sm-6"><img src="/saolei/img/begin.png" height="50px" /></div>
                             <div class="col-sm-3">
                                 <div class="sideDiv">
-                                    時間 <span id="timeDiv"></span>
+                                    <span id="timeDiv"></span>
                                 </div>
                             </div>
                         </div>
