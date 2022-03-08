@@ -5,6 +5,9 @@ on:
       - master
     paths:
       - .github/workflows/db-push-latest-seeded-image.yaml
+
+  workflow_dispatch:
+
 jobs:
   pull-user-db:
     runs-on: ubuntu-latest
