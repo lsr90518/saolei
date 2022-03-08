@@ -20,7 +20,15 @@ jobs:
       - uses: actions/checkout@v2
       - run: |
           SCHEMA_SHA=$(git hash-object ./js/mine.js)
-          echo $SCHEMA_SHA
-          docker pull postgres:13
-          docker pull postgres:13
-          docker images --digests
+          USER_DB_NEW=asia.gcr.io/beatrust-devs/user-db:$SCHEMA_SHA
+          USER_DB_LATEST=asia.gcr.io/beatrust-devs/user-db:latest-seeded
+
+          DIGEST_1=$(docker pull $USER_DB_NEW | grep "Digest:")
+          DIGEST_2=$(docker pull $USER_DB_LATEST | grep "Digest:")
+  
+          if [ "$DIGEST_1" = "$DIGEST_2" ]; then
+            exit 1
+          else
+            docker tag $USER_DB_NEW $USER_DB_LATEST
+            docker push $USER_DB_LATEST
+          fi
