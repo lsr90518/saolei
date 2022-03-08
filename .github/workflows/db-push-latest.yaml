@@ -1,0 +1,18 @@
+name: Pull latest seeded DB image
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - .github/workflows/db-push-latest-seeded-image.yaml
+jobs:
+  pull-user-db:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: |
+          SCHEMA_SHA=git hash-object ./js/mine.js
+          echo $SCHEMA_SHA
+          docker pull postgres:13
+          docker pull postgres:25
+          docker images --digests
