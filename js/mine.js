@@ -1,4 +1,4 @@
-
+// version 0.0.1
 //properties data
 var gameStatus = 0;//1.start 2.over 3.pause
 var mapSize = 10;//5*5
